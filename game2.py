@@ -168,8 +168,49 @@ while running:
                 game_over = False 
                 paused = False 
         
+        # --- CONTROLLER INPUT HANDLING ---
+        if joystick:
+            # Handle controller buttons (START/SELECT work here)
+            if event.type == pygame.JOYBUTTONDOWN:
+                if event.button == 8: # SELECT button for restart
+                    initializeGameState()
+                    game_over = False
+                    paused = False
+                elif event.button == 9: # START button for pause
+                    paused = not paused 
+                # Optional: Add debug print for all buttons pressed to find the other 7 buttons
+                # print(f"Button {event.button} pressed")
+            
+            # FIX: Handle D-pad as a HAT motion (if it works this way for your controller)
+            elif event.type == pygame.JOYHATMOTION:
+                if event.value == (0, 1) and direction != DOWN:
+                    next_direction = UP
+                elif event.value == (0, -1) and direction != UP:
+                    next_direction = DOWN
+                elif event.value == (-1, 0) and direction != RIGHT:
+                    next_direction = LEFT
+                elif event.value == (1, 0) and direction != LEFT:
+                    next_direction = RIGHT
+            
+            # FIX 2: Handle D-pad as AXIS motion (if it doesn't work as a HAT)
+            elif event.type == pygame.JOYAXISMOTION:
+                axis_0_value = joystick.get_axis(0) # X-axis
+                axis_1_value = joystick.get_axis(1) # Y-axis
+                
+                # Check for significant movement (tolerance for analog noise)
+                if abs(axis_0_value) > 0.5:
+                    if axis_0_value < 0 and direction != RIGHT:
+                        next_direction = LEFT
+                    elif axis_0_value > 0 and direction != LEFT:
+                        next_direction = RIGHT
+                
+                if abs(axis_1_value) > 0.5:
+                    if axis_1_value < 0 and direction != DOWN:
+                        next_direction = UP
+                    elif axis_1_value > 0 and direction != UP:
+                        next_direction = DOWN
+
         # Call the controller handling function for debugging prints
-        nes(event)
         log_all_buttons(event)
     # Handle Game Over 
     if game_over:
@@ -244,4 +285,5 @@ while running:
 # Quit pygame
 pygame.quit()
 sys.exit()
+
 

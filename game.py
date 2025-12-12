@@ -163,23 +163,23 @@ while running:
                 continue
             # print("Next Direction:", next_direction)
 
-        # Handle Game Over 
-        if game_over:
-            screen.fill(BLACK)
-            game_over_surf = font.render("Game Over - press R to restart", True, WHITE)
-            screen.blit(game_over_surf, (10, 10))
-            pygame.display.flip()
-            clock.tick(FPS_START)
-            continue
+    # Handle Game Over 
+    if game_over:
+        screen.fill(BLACK)
+        game_over_surf = font.render("Game Over - press R to restart", True, WHITE)
+        screen.blit(game_over_surf, (10, 10))
+        pygame.display.flip()
+        clock.tick(FPS_START)
+        continue
 
-        # Handle Pause
-        if paused:
-            screen.fill(BLACK)
-            pause_surf = font.render("PAUSED - press P to resume", True, WHITE)
-            screen.blit(pause_surf, (10, 10))
-            pygame.display.flip()
-            clock.tick(FPS_START)
-            continue
+    # Handle Pause
+    if paused:
+        screen.fill(BLACK)
+        pause_surf = font.render("PAUSED - press P to resume", True, WHITE)
+        screen.blit(pause_surf, (10, 10))
+        pygame.display.flip()
+        clock.tick(FPS_START)
+        continue
 
     # Movement & turning logic
     opposite = (-direction[0], -direction[1])

@@ -83,7 +83,7 @@ def nes(event):
 
 
         # --- Handle Joystick Button events (e.g., A, B, Start, Select) ---
-        elif event.type == pygame.JOYBUTTONDOWN:
+    elif event.type == pygame.JOYBUTTONDOWN:
             # Button 0 is often 'B', Button 1 is often 'A' on USB SNES pads
             if event.button == 0:
                 print("NES Button B (via controller)")
@@ -96,7 +96,7 @@ def nes(event):
 
         
         # --- Handle Hat Switch events (D-pad UP/DOWN/LEFT/RIGHT) ---
-        elif event.type == pygame.JOYHATMOTION:
+    elif event.type == pygame.JOYHATMOTION:
             # The value is a tuple (x, y)
             if event.value == (0, 1):
                 print("NES D-pad UP")
@@ -256,4 +256,5 @@ while running:
 # Quit pygame
 pygame.quit()
 sys.exit()
+
 

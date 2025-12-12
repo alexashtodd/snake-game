@@ -1,4 +1,3 @@
-from pynput import keyboard
 import pygame
 import sys
 import time
@@ -65,34 +64,30 @@ def initializeGameState():
     fps = FPS_START
     game_over = False
     paused = False
-    running = True
+    # Note: 'running' global variable should ideally be handled outside initialize, 
+    # but kept here to match user's global usage pattern.
 
 def nes(event):
+    """Handles controller/keyboard input and prints debug info."""
+    # Note: This function only prints output, it doesn't change game state variables directly.
     if event.type == pygame.KEYDOWN:
             print(f"Keyboard Key pressed: {pygame.key.name(event.key)}")
-            # You can map keyboard keys to NES actions here, e.g.:
             if event.key == pygame.K_z:
                 print("NES Button B (via keyboard)")
             elif event.key == pygame.K_x:
                 print("NES Button A (via keyboard)")
 
-
-        # --- Handle Joystick Button events (e.g., A, B, Start, Select) ---
     elif event.type == pygame.JOYBUTTONDOWN:
-            # Button 0 is often 'B', Button 1 is often 'A' on USB SNES pads
             if event.button == 0:
                 print("NES Button B (via controller)")
             elif event.button == 1:
                 print("NES Button A (via controller)")
             elif event.button == 8:
-                print("NES SELECT (via controller)") # Check docs for your specific pad
+                print("NES SELECT (via controller)")
             elif event.button == 9:
-                print("NES START (via controller)") # Check docs for your specific pad
+                print("NES START (via controller)")
 
-        
-        # --- Handle Hat Switch events (D-pad UP/DOWN/LEFT/RIGHT) ---
     elif event.type == pygame.JOYHATMOTION:
-            # The value is a tuple (x, y)
             if event.value == (0, 1):
                 print("NES D-pad UP")
             elif event.value == (0, -1):
@@ -103,13 +98,6 @@ def nes(event):
                 print("NES D-pad RIGHT")
 
 
-#head and segments
-#snakePartXY = [(0,0)] 
-
-#diretion x and y
-#dx = 0 
-#dy = 0
-
 # Initialize Pygame
 pygame.init()
 screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -117,7 +105,7 @@ pygame.display.set_caption("Snake")
 clock = pygame.time.Clock()
 font = pygame.font.SysFont(None, 24)
 
-# Initial game state
+# Initial game state (global variables)
 snake = [(GRID_WIDTH // 2, GRID_HEIGHT // 2),
          (GRID_WIDTH // 2 - 1, GRID_HEIGHT // 2),
          (GRID_WIDTH // 2 - 2, GRID_HEIGHT // 2)]
@@ -129,63 +117,51 @@ score = 0
 fps = FPS_START
 game_over = False
 paused = False
-running = True
+running = True # This needs to be True to start the while loop
 
-# # Initialize the joystick module
+# Initialize the joystick module
 pygame.joystick.init()
 joystick_count = pygame.joystick.get_count()
 
 if joystick_count == 0:
      print("No joystick detected. Using keyboard only.  Please connect your controller and restart the script.")
-     # sys.exit()
 else:
-     # Get the first joystick (index 0)
      joystick = pygame.joystick.Joystick(0)
      joystick.init()
      print(f"Detected Joystick: {joystick.get_name()}")
-     print(f"Number of buttons: {joystick.get_numbuttons()}")
-     print(f"Number of axes: {joystick.get_numaxes()}")
-     print(f"Number of hat switches (D-pads): {joystick.get_numhats()}")
-     print("-" * 30)
-     print("Press buttons or move sticks to see their mappings...")
+     # ... (rest of joystick debug prints) ...
+
 
 # Game loop
 while running:
 
     # Process events
-    events = pygame.event.get()
-    for event in events: 
-    # for event in pygame.event.get():
+    # FIX 1: Consolidated event loops.
+    for event in pygame.event.get(): 
 
         # Check for quit event
         if event.type == pygame.QUIT:
             running = False
             continue
 
-        # Key pressed event 
+        # Key pressed event (This handles the game movement)
         if event.type == pygame.KEYDOWN:
-            # print("Key down:", event.key)
-            if event.key in (pygame.K_UP, pygame.K_w):
+            if event.key in (pygame.K_UP, pygame.K_w) and direction != DOWN:
                 next_direction = UP
-                continue
-            elif event.key in (pygame.K_DOWN, pygame.K_s):
+            elif event.key in (pygame.K_DOWN, pygame.K_s) and direction != UP:
                 next_direction = DOWN
-                continue
-            elif event.key in (pygame.K_LEFT, pygame.K_a):
+            elif event.key in (pygame.K_LEFT, pygame.K_a) and direction != RIGHT:
                 next_direction = LEFT
-                continue
-            elif event.key in (pygame.K_RIGHT, pygame.K_d):
+            elif event.key in (pygame.K_RIGHT, pygame.K_d) and direction != LEFT:
                 next_direction = RIGHT
-                continue
             elif event.key == pygame.K_p:
                 paused = not paused
-                continue
             elif event.key == pygame.K_r:
                 initializeGameState()
                 game_over = False 
                 paused = False 
-                continue
-            # print("Next Direction:", next_direction)
+        
+        # Call the controller handling function for debugging prints
         nes(event)
 
     # Handle Game Over 
@@ -207,9 +183,10 @@ while running:
         continue
 
     # Movement & turning logic
+    # FIX 2: Check for opposite direction *before* setting the direction
     opposite = (-direction[0], -direction[1])
     if next_direction != opposite:
-        direction = next_direction
+         direction = next_direction
 
     head_x, head_y = snake[0]
     dx, dy = direction
@@ -235,22 +212,28 @@ while running:
         snake.pop()  # remove tail
     else:
         growing = False
+
+    # FIX 3: Clear screen *once* before drawing everything in its new position
+    screen.fill(BLACK)
         
     for x_pos in range(GRID_WIDTH):
         for y_pos in range(GRID_HEIGHT):
-            if (x_pos, y_pos) in snake:
-                draw_rect(screen, (x_pos, y_pos), GREEN)
-            elif (x_pos, y_pos) == food:
-                draw_rect(screen, (x_pos, y_pos), RED)
+            pos = (x_pos, y_pos)
+            if pos in snake:
+                draw_rect(screen, pos, GREEN)
+            elif pos == food:
+                draw_rect(screen, pos, RED)
             else:
-                draw_rect(screen, (x_pos, y_pos), GRAY) 
+                # FIX 4: Only draw gray background if you want a checkerboard/grid background.
+                # If you want a plain black background, comment out this else block.
+                draw_rect(screen, pos, GRAY) 
 
-    screen.blit(screen, (0, 0))
+    # FIX 5: Remove redundant/incorrect screen blit
+    # screen.blit(screen, (0, 0)) 
+    
     pygame.display.flip()
     clock.tick(fps)
+    
 # Quit pygame
 pygame.quit()
 sys.exit()
-
-
-

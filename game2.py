@@ -72,7 +72,7 @@ def initializeGameState():
     paused = False
     running = True
 
-def nes(event)
+def nes(event):
     if event.type == pygame.KEYDOWN:
             print(f"Keyboard Key pressed: {pygame.key.name(event.key)}")
             # You can map keyboard keys to NES actions here, e.g.:
@@ -256,3 +256,4 @@ while running:
 # Quit pygame
 pygame.quit()
 sys.exit()
+

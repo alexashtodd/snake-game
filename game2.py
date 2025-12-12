@@ -41,12 +41,7 @@ def draw_rect(surface, pos, color):
     rect = pygame.Rect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
     pygame.draw.rect(surface, color, rect)
 
-    if(eatfood == True): #if eats food, increse snake length
-        return(snakePartxy) #increse snake length and returns to replace main snakePartXY
-    else:
-        snakePartxy.pop() #remove last segment of snake to avoid incresing length
-        return(snakePartxy) #returns new list to replace main snakePartXY
-    
+
 def initializeGameState():
     global snake
     global direction
@@ -137,13 +132,13 @@ paused = False
 running = True
 
 # # Initialize the joystick module
- pygame.joystick.init()
- joystick_count = pygame.joystick.get_count()
+pygame.joystick.init()
+joystick_count = pygame.joystick.get_count()
 
- if joystick_count == 0:
+if joystick_count == 0:
      print("No joystick detected. Using keyboard only.  Please connect your controller and restart the script.")
      # sys.exit()
- else:
+else:
      # Get the first joystick (index 0)
      joystick = pygame.joystick.Joystick(0)
      joystick.init()
@@ -256,5 +251,6 @@ while running:
 # Quit pygame
 pygame.quit()
 sys.exit()
+
 
 

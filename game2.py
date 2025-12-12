@@ -67,6 +67,13 @@ def initializeGameState():
     # Note: 'running' global variable should ideally be handled outside initialize, 
     # but kept here to match user's global usage pattern.
 
+def log_all_buttons(event):
+    if event.type == pygame.JOYBUTTONDOWN:
+        # This will print the index of any button you press:
+        print(f"DEBUG: Button {event.button} was pressed.")
+    elif event.type == pygame.JOYHATMOTION:
+        print(f"DEBUG: D-Pad/Hat motion detected: {event.value}")
+
 def nes(event):
     """Handles controller/keyboard input and prints debug info."""
     # Note: This function only prints output, it doesn't change game state variables directly.
@@ -163,7 +170,7 @@ while running:
         
         # Call the controller handling function for debugging prints
         nes(event)
-
+        log_all_buttons(event)
     # Handle Game Over 
     if game_over:
         screen.fill(BLACK)
@@ -237,3 +244,4 @@ while running:
 # Quit pygame
 pygame.quit()
 sys.exit()
+

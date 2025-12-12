@@ -129,6 +129,25 @@ while running:
                 initializeGameState()
                 game_over = False 
                 paused = False 
+            elif event.key in (pygame.K_1, pygame.K_KP1):
+                print("Key 1 pressed (example action)") # Replace with desired functionality
+            elif event.key in (pygame.K_2, pygame.K_KP2):
+                print("Key 2 pressed (example action)")
+            elif event.key in (pygame.K_3, pygame.K_KP3):
+                print("Key 3 pressed (example action)")
+            elif event.key in (pygame.K_4, pygame.K_KP4):
+                print("Key 4 pressed (example action)")
+            elif event.key in (pygame.K_5, pygame.K_KP5):
+                print("Key 5 pressed (example action)")
+            elif event.key in (pygame.K_6, pygame.K_KP6):
+                print("Key 6 pressed (example action)")
+            elif event.key in (pygame.K_7, pygame.K_KP7):
+                print("Key 7 pressed (example action)")
+            elif event.key in (pygame.K_8, pygame.K_KP8):
+                print("Key 8 pressed (example action)")
+            elif event.key in (pygame.K_9, pygame.K_KP9):
+                print("Key 9 pressed (example action)")
+
         
         # --- CONTROLLER INPUT HANDLING ---
         if joystick:
@@ -240,6 +259,7 @@ while running:
 # Quit pygame
 pygame.quit()
 sys.exit()
+
 
 
 
